@@ -1,0 +1,11 @@
+tensorflow
+fastapi
+uvicorn
+python-multipart
+matplotlib
+scikit-learn
+jupyter
+opendatasets
+pandas
+Pillow
+slowapi

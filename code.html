@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OncoVision</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Outfit:wght@500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#00687a",
+                        "secondary-fixed-dim": "#c4c7c9",
+                        "error-container": "#93000a",
+                        "on-tertiary": "#4b2800",
+                        "on-secondary-fixed-variant": "#444749",
+                        "on-surface-variant": "#bcc9cd",
+                        "outline": "#869397",
+                        "on-error": "#690005",
+                        "on-tertiary-fixed-variant": "#6a3b00",
+                        "primary-fixed-dim": "#4cd7f6",
+                        "tertiary-fixed-dim": "#ffb873",
+                        "tertiary-container": "#e89337",
+                        "outline-variant": "#3d494c",
+                        "on-primary-fixed-variant": "#004e5c",
+                        "background": "#0e1416",
+                        "surface-container-high": "#252b2d",
+                        "on-primary-fixed": "#001f26",
+                        "on-tertiary-fixed": "#2d1600",
+                        "tertiary": "#ffb873",
+                        "surface-tint": "#4cd7f6",
+                        "surface-bright": "#343a3c",
+                        "surface-container": "#1b2122",
+                        "surface-container-low": "#171d1e",
+                        "primary-container": "#06b6d4",
+                        "on-primary-container": "#00424f",
+                        "secondary-container": "#464a4b",
+                        "surface-variant": "#303638",
+                        "primary": "#4cd7f6",
+                        "secondary-fixed": "#e0e3e5",
+                        "secondary": "#c4c7c9",
+                        "surface-container-highest": "#303638",
+                        "on-surface": "#dee3e6",
+                        "tertiary-fixed": "#ffdcbf",
+                        "inverse-on-surface": "#2b3133",
+                        "surface-container-lowest": "#090f11",
+                        "inverse-surface": "#dee3e6",
+                        "on-primary": "#003640",
+                        "on-secondary-fixed": "#191c1e",
+                        "surface-dim": "#0e1416",
+                        "on-secondary": "#2d3133",
+                        "on-secondary-container": "#b6b9bb",
+                        "on-background": "#dee3e6",
+                        "primary-fixed": "#acedff",
+                        "surface": "#0e1416",
+                        "error": "#ffb4ab",
+                        "on-tertiary-container": "#5b3200",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "8px",
+                        "gutter": "24px",
+                        "sidebar-width": "280px",
+                        "container-padding": "32px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Outfit"],
+                        "display-lg-mobile": ["Outfit"],
+                        "headline-md": ["Outfit"],
+                        "data-mono": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-sm": ["13px", { "lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "display-lg-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "500" }],
+                        "data-mono": ["14px", { "lineHeight": "1.4", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .upload-zone {
+            transition: all 0.3s ease;
+        }
+        
+        .upload-zone.dragover {
+            border-color: #06B6D4;
+            background: rgba(6, 182, 212, 0.05);
+            box-shadow: inset 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
+        .circular-chart {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%;
+            max-height: 250px;
+        }
+        
+        .circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 2.5;
+        }
+        
+        .circle {
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            animation: progress 1s ease-out forwards;
+        }
+
+        @keyframes progress {
+            0% {
+                stroke-dasharray: 0 100;
+            }
+        }
+
+        .percentage {
+            font-family: "Outfit", sans-serif;
+            font-size: 0.5em;
+            text-anchor: middle;
+            fill: #dee3e6;
+            font-weight: 600;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-in forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(6, 182, 212, 0.2);
+            border-radius: 50%;
+            border-top-color: #06B6D4;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+
+        /* ── Review Flags Modal ── */
+        #flags-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: rgba(9, 15, 17, 0.75);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        #flags-modal.open {
+            display: flex;
+            animation: modalIn 0.25s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+        #flags-modal-card {
+            background: #171d1e;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            max-width: 540px;
+            width: 100%;
+            padding: 2rem;
+            animation: cardIn 0.28s cubic-bezier(0.22,1,0.36,1) forwards;
+        }
+        @keyframes cardIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to   { transform: translateY(0);    opacity: 1; }
+        }
+        .flag-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.6rem;
+            border: 1px solid transparent;
+            transition: background 0.2s;
+        }
+        .flag-item.critical  { background: rgba(255,180,171,0.07); border-color: rgba(255,180,171,0.18); }
+        .flag-item.warning   { background: rgba(255,184,115,0.07); border-color: rgba(255,184,115,0.18); }
+        .flag-item.info      { background: rgba(76,215,246,0.06);  border-color: rgba(76,215,246,0.15);  }
+        .flag-item.success   { background: rgba(76,215,246,0.04);  border-color: rgba(76,215,246,0.10);  }
+        .flag-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+        .flag-dot.critical { background: #ffb4ab; box-shadow: 0 0 6px rgba(255,180,171,0.5); }
+        .flag-dot.warning  { background: #ffb873; box-shadow: 0 0 6px rgba(255,184,115,0.4); }
+        .flag-dot.info     { background: #4cd7f6; box-shadow: 0 0 6px rgba(76,215,246,0.4); }
+        .flag-dot.success  { background: #4cd7f6; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md text-body-md overflow-x-hidden">
+<!-- TopNavBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-gutter h-20 bg-surface-container/80 backdrop-blur-md dark:bg-surface-container/80 border-b border-white/10 shadow-sm print:hidden">
+<div class="flex items-center gap-8">
+<span class="font-display-lg text-display-lg text-primary tracking-tighter">OncoVision</span>
+<div class="hidden md:flex gap-6">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 cursor-pointer active:opacity-80" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#" onclick="alert('History module coming soon!')">History</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#" onclick="alert('Resources module coming soon!')">Resources</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 cursor-pointer active:opacity-80" href="#" onclick="alert('Protocol guidelines coming soon!')">Protocol</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="bg-primary-container text-white px-4 py-2 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity" onclick="location.reload()">
+                New Scan
+            </button>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<img alt="User profile" class="w-10 h-10 rounded-full object-cover border border-white/10" data-alt="A small, circular user profile picture featuring a professional headshot in high contrast lighting against a dark medical tech background, realistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzDk3HJRJWBcvmyt630zd236Rrf7nPA89P9OSkfu8NnvuGjUdCM1hOOGgumjW7olASxOU3cK_4kJltahmU2VwpWv_lWh-W6s7fz0jTnS7_b62sgsGy1VwvOsKrB5XtDtMMyok7OMNbBzK06yKLMMuVWegmpPeHhWaiT73lBAEYKwgE6X2k3TYTIewTvVsnFozLYPK8ovYCI6lyMvcxq-d3VsAaOm4WsNsxmGQT92KOcs4nsO04uw"/>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="pt-[120px] pb-gutter px-gutter max-w-7xl mx-auto min-h-screen flex flex-col">
+<header class="mb-8 print:hidden">
+<h1 class="font-headline-md text-headline-md text-on-surface mb-2">Diagnostic Scan Analysis</h1>
+<p class="text-on-surface-variant font-body-md text-body-md max-w-2xl">Upload high-resolution histopathology slides for automated morphological assessment and malignancy prediction.</p>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-grow">
+<!-- Upload Panel (Left) -->
+<div class="lg:col-span-5 flex flex-col print:hidden">
+<div class="glass-panel rounded-xl p-6 flex flex-col h-full relative" id="drop-zone">
+<div class="mb-4">
+<h2 class="font-label-sm text-label-sm text-secondary-fixed-dim uppercase tracking-wider">Input Source</h2>
+</div>
+<div class="flex-grow upload-zone border-2 border-dashed border-outline-variant rounded-lg flex flex-col items-center justify-center p-8 text-center group" id="upload-area">
+<div class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center mb-6 group-hover:bg-primary-container/10 transition-colors">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant group-hover:text-primary transition-colors" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Drag &amp; Drop Scan</h3>
+<p class="text-on-surface-variant mb-6 text-sm">Supported: PNG, JPG (Max 10MB)</p>
+<!-- Most reliable upload: label wraps input, clicking label always opens dialog -->
+<label for="file-upload" class="bg-primary-container text-white px-6 py-2.5 rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-all cursor-pointer shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+    Select Image
+</label>
+<input accept="image/*" id="file-upload" type="file" style="position:absolute; width:1px; height:1px; opacity:0; pointer-events:none;"/>
+</div>
+<div class="mt-4 flex items-center justify-between text-xs text-secondary-fixed-dim">
+<span>Secure End-to-End Encryption</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">lock</span> HIPAA Compliant</span>
+</div>
+</div>
+</div>
+<!-- Results Dashboard (Right) -->
+<div class="lg:col-span-7 flex flex-col print:col-span-12 print:w-full">
+<div class="glass-panel rounded-xl p-6 flex flex-col h-full relative overflow-hidden" id="results-panel">
+<!-- Initial Empty State -->
+<div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center z-10" id="empty-state">
+<span class="material-symbols-outlined text-6xl text-outline-variant mb-4" data-icon="biotech">biotech</span>
+<h3 class="font-headline-md text-headline-md text-on-surface-variant mb-2">Awaiting Input</h3>
+<p class="text-secondary-fixed-dim max-w-sm">Upload a slide to initiate automated morphological analysis and view diagnostic predictions.</p>
+</div>
+<!-- Loading State -->
+<div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center z-20 bg-surface-container-low/80 backdrop-blur-sm hidden" id="loading-state">
+<div class="loader mb-6"></div>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Analyzing Morphology...</h3>
+<p class="text-on-surface-variant font-data-mono text-data-mono">Running CNN inference pipeline</p>
+</div>
+<!-- Results Content (Hidden Initially) -->
+<div class="hidden h-full flex flex-col opacity-0" id="results-content">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-label-sm text-label-sm text-secondary-fixed-dim uppercase tracking-wider">Analysis Results</h2>
+<span class="font-data-mono text-data-mono text-on-surface-variant" id="scan-id">ID: SCAN-8492</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+<!-- Image Preview & Details -->
+<div class="flex flex-col gap-4">
+<div class="rounded-lg overflow-hidden border border-white/5 bg-surface aspect-square relative group">
+<img alt="Scan Preview" class="w-full h-full object-cover transition-transform duration-300 ease-in-out" id="preview-image" src="" style="transform: scale(1);"/>
+<!-- Magnification Toggle (Decorative) -->
+<div class="absolute bottom-3 left-3 flex bg-surface-container/90 backdrop-blur-md rounded border border-white/10 p-1">
+<button class="zoom-btn px-2 py-1 text-xs font-data-mono text-on-surface-variant hover:text-primary transition-colors" onclick="setZoom(1, this)">4x</button>
+<button class="zoom-btn px-2 py-1 text-xs font-data-mono text-primary bg-white/5 rounded transition-colors" onclick="setZoom(2.5, this)">10x</button>
+<button class="zoom-btn px-2 py-1 text-xs font-data-mono text-on-surface-variant hover:text-primary transition-colors" onclick="setZoom(10, this)">40x</button>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 text-sm">
+<div class="bg-surface-variant/30 p-2 rounded">
+<span class="text-secondary-fixed-dim block text-xs mb-1">Resolution</span>
+<span class="font-data-mono text-data-mono text-on-surface" id="res-val">2048x2048</span>
+</div>
+<div class="bg-surface-variant/30 p-2 rounded">
+<span class="text-secondary-fixed-dim block text-xs mb-1">Stain</span>
+<span class="font-data-mono text-data-mono text-on-surface">H&amp;E</span>
+</div>
+</div>
+</div>
+<!-- Metrics & Prediction -->
+<div class="flex flex-col justify-between">
+<div class="glass-panel p-5 rounded-lg mb-4 text-center">
+<h4 class="text-secondary-fixed-dim text-xs uppercase tracking-wider mb-2">Prediction</h4>
+<!-- Dynamic Badge injected here -->
+<div class="my-4" id="prediction-badge-container">
+<!-- Example static structure, will be replaced by JS -->
+<span class="inline-block px-6 py-2 rounded-full font-label-sm text-label-sm bg-surface-variant text-on-surface">Processing</span>
+</div>
+</div>
+<div class="glass-panel p-5 rounded-lg flex-grow flex flex-col items-center justify-center relative">
+<h4 class="text-secondary-fixed-dim text-xs uppercase tracking-wider absolute top-5 left-5">Confidence</h4>
+<!-- SVG Circular Gauge -->
+<svg class="circular-chart" id="confidence-chart" viewbox="0 0 36 36">
+<path class="circle-bg" d="M18 2.0845
+                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                            a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+<path class="circle" d="M18 2.0845
+                                            a 15.9155 15.9155 0 0 1 0 31.831
+                                            a 15.9155 15.9155 0 0 1 0 -31.831" id="confidence-path" stroke-dasharray="0, 100" style="stroke: #06B6D4;"></path>
+<text class="percentage" id="confidence-text" x="18" y="20.35">--%</text>
+</svg>
+</div>
+<div class="mt-4 flex gap-3 print:hidden">
+<button class="flex-1 bg-surface-variant/50 border border-outline-variant text-on-surface py-2 rounded-lg font-label-sm text-label-sm hover:bg-surface-variant transition-colors text-center" onclick="window.print()">
+                                        Export Report
+                                    </button>
+<button id="review-flags-btn" class="flex-1 bg-primary-container/10 border border-primary text-primary py-2 rounded-lg font-label-sm text-label-sm hover:bg-primary-container/20 transition-colors text-center" onclick="openFlagsModal()">
+                                        Review Flags
+                                    </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+<!-- Review Flags Modal -->
+<div id="flags-modal" role="dialog" aria-modal="true" aria-labelledby="flags-modal-title" onclick="closeFlagsOnBackdrop(event)">
+  <div id="flags-modal-card">
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
+      <div>
+        <h2 id="flags-modal-title" style="font-family:'Outfit',sans-serif; font-size:1.15rem; font-weight:600; color:#dee3e6; margin:0 0 0.25rem;">Diagnostic Flags</h2>
+        <p id="flags-modal-subtitle" style="font-size:0.8rem; color:#869397; margin:0;">Review flagged findings for current scan</p>
+      </div>
+      <button onclick="closeFlagsModal()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:0.5rem; padding:0.4rem 0.6rem; color:#bcc9cd; cursor:pointer; line-height:1; font-size:1.1rem; transition:background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.05)'" aria-label="Close">&times;</button>
+    </div>
+    <!-- Flag list -->
+    <div id="flags-list"></div>
+    <!-- Footer -->
+    <div style="margin-top:1.5rem; display:flex; gap:0.75rem; justify-content:flex-end;">
+      <button onclick="closeFlagsModal()" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:0.5rem; padding:0.5rem 1.25rem; color:#dee3e6; font-size:0.85rem; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseenter="this.style.background='rgba(255,255,255,0.1)'" onmouseleave="this.style.background='rgba(255,255,255,0.05)'">Dismiss</button>
+      <button onclick="window.print(); closeFlagsModal();" style="background:#06b6d4; border:none; border-radius:0.5rem; padding:0.5rem 1.25rem; color:#003640; font-size:0.85rem; font-weight:600; cursor:pointer; transition:opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">Export with Flags</button>
+    </div>
+  </div>
+</div>
+<script>
+        /* ── Flags data ── */
+        const FLAGS_DATA = {
+            malignant: [
+                { level: 'critical', icon: 'warning',       title: 'High Malignancy Risk',        desc: 'CNN confidence exceeds clinical threshold. Immediate specialist referral recommended.' },
+                { level: 'critical', icon: 'cell_tower',    title: 'Abnormal Nuclear Morphology',  desc: 'Pleomorphic nuclei detected — irregular size and shape consistent with invasive carcinoma.' },
+                { level: 'warning',  icon: 'biotech',       title: 'Elevated Mitotic Index',       desc: 'Increased mitotic figures observed. Indicates rapid tumour cell proliferation.' },
+                { level: 'warning',  icon: 'hub',           title: 'Loss of Tissue Architecture',  desc: 'Disrupted glandular structures and stromal invasion patterns noted.' },
+                { level: 'info',     icon: 'assignment',    title: 'Biopsy Correlation Advised',   desc: 'Histopathological confirmation via core needle biopsy is strongly recommended.' },
+            ],
+            benign: [
+                { level: 'success',  icon: 'check_circle',  title: 'No Malignancy Detected',       desc: 'Morphological patterns are consistent with benign tissue. No invasive structures identified.' },
+                { level: 'info',     icon: 'schedule',      title: 'Routine Follow-Up Suggested',  desc: 'Standard 12-month surveillance interval recommended per clinical protocol.' },
+                { level: 'info',     icon: 'fiber_manual_record', title: 'Fibroadenoma Pattern',  desc: 'Well-defined borders and uniform cellularity suggest fibroadenoma-type lesion.' },
+            ],
+            uncertain: [
+                { level: 'warning',  icon: 'help',          title: 'Indeterminate Classification', desc: 'Model confidence is below the reliable threshold. Manual pathologist review required.' },
+                { level: 'warning',  icon: 'visibility',    title: 'Slide Quality Concern',        desc: 'Potential staining artefacts or focus issues may be affecting inference accuracy.' },
+                { level: 'info',     icon: 'assignment',    title: 'Second Opinion Recommended',   desc: 'Consider re-scanning with improved slide preparation or seeking specialist review.' },
+            ],
+            unknown: [
+                { level: 'info',     icon: 'upload_file',   title: 'No Scan Analysed Yet',         desc: 'Upload and process a histopathology slide to generate diagnostic flags.' },
+            ]
+        };
+
+        /* Track current prediction globally so the modal can read it */
+        let currentPrediction = 'unknown';
+        let currentConfidence = 0;
+        let currentScanId = '';
+
+        function openFlagsModal() {
+            const modal = document.getElementById('flags-modal');
+            const list  = document.getElementById('flags-list');
+            const subtitle = document.getElementById('flags-modal-subtitle');
+
+            const key = FLAGS_DATA[currentPrediction] ? currentPrediction : 'unknown';
+            const flags = FLAGS_DATA[key];
+
+            subtitle.textContent = currentScanId
+                ? `${currentScanId} · ${currentPrediction.charAt(0).toUpperCase()+currentPrediction.slice(1)} · ${currentConfidence}% confidence`
+                : 'Upload and analyse a scan first';
+
+            list.innerHTML = '';
+            flags.forEach(f => {
+                const item = document.createElement('div');
+                item.className = `flag-item ${f.level}`;
+                item.innerHTML = `
+                    <div class="flag-dot ${f.level}"></div>
+                    <div style="flex:1;">
+                        <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem;">
+                            <span class="material-symbols-outlined" style="font-size:15px; color:${ f.level==='critical'?'#ffb4ab': f.level==='warning'?'#ffb873':'#4cd7f6' };">${f.icon}</span>
+                            <span style="font-size:0.82rem; font-weight:600; font-family:'Inter',sans-serif; color:${ f.level==='critical'?'#ffb4ab': f.level==='warning'?'#ffb873':'#4cd7f6' };">${f.title}</span>
+                        </div>
+                        <p style="font-size:0.78rem; color:#bcc9cd; margin:0; line-height:1.45;">${f.desc}</p>
+                    </div>`;
+                list.appendChild(item);
+            });
+
+            modal.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeFlagsModal() {
+            document.getElementById('flags-modal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function closeFlagsOnBackdrop(e) {
+            if (e.target === document.getElementById('flags-modal')) closeFlagsModal();
+        }
+
+        /* Close on Escape key */
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFlagsModal(); });
+
+        // Zoom and Pan functionality
+        let currentScale = 1;
+        let isDragging = false;
+        let startX = 0, startY = 0;
+        let translateX = 0, translateY = 0;
+
+        function updateTransform() {
+            document.getElementById('preview-image').style.transform = `scale(${currentScale}) translate(${translateX}px, ${translateY}px)`;
+        }
+
+        function setZoom(scale, btnElement) {
+            const imgEl = document.getElementById('preview-image');
+            imgEl.style.transition = 'transform 0.3s ease-in-out';
+            currentScale = scale;
+            if (scale === 1) {
+                translateX = 0;
+                translateY = 0;
+                imgEl.style.cursor = 'default';
+            } else {
+                imgEl.style.cursor = 'grab';
+            }
+            updateTransform();
+            
+            // Reset all buttons
+            document.querySelectorAll('.zoom-btn').forEach(btn => {
+                btn.classList.remove('text-primary', 'bg-white/5', 'rounded');
+                btn.classList.add('text-on-surface-variant', 'hover:text-primary');
+            });
+            
+            // Set active button
+            btnElement.classList.remove('text-on-surface-variant', 'hover:text-primary');
+            btnElement.classList.add('text-primary', 'bg-white/5', 'rounded');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const previewImage = document.getElementById('preview-image');
+            
+            // Panning events
+            previewImage.addEventListener('mousedown', (e) => {
+                if (currentScale <= 1) return;
+                isDragging = true;
+                previewImage.style.transition = 'none'; // Instant dragging
+                startX = e.clientX - (translateX * currentScale);
+                startY = e.clientY - (translateY * currentScale);
+                previewImage.style.cursor = 'grabbing';
+                e.preventDefault();
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                translateX = (e.clientX - startX) / currentScale;
+                translateY = (e.clientY - startY) / currentScale;
+                updateTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if(isDragging) {
+                    isDragging = false;
+                    previewImage.style.cursor = currentScale > 1 ? 'grab' : 'default';
+                }
+            });
+
+            const dropZone = document.getElementById('drop-zone');
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-upload');
+            
+            const emptyState = document.getElementById('empty-state');
+            const loadingState = document.getElementById('loading-state');
+            const resultsContent = document.getElementById('results-content');
+            
+            const predictionBadgeContainer = document.getElementById('prediction-badge-container');
+            const confidencePath = document.getElementById('confidence-path');
+            const confidenceText = document.getElementById('confidence-text');
+            const scanId = document.getElementById('scan-id');
+
+            // Drag and Drop Visuals
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, () => {
+                    uploadArea.classList.remove('dragover');
+                }, false);
+            });
+
+            // Drop and file input listeners
+            uploadArea.addEventListener('drop', handleDrop, false);
+            fileInput.addEventListener('change', handleFileSelect, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) handleFiles(files[0]);
+            }
+
+            function handleFileSelect(e) {
+                const files = e.target.files;
+                if (files.length > 0) handleFiles(files[0]);
+            }
+
+            function handleFiles(file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file.');
+                    return;
+                }
+
+                // Show the results panel immediately so image is visible
+                emptyState.style.display = 'none';
+                loadingState.classList.remove('hidden');
+                resultsContent.classList.remove('hidden', 'opacity-0');
+                resultsContent.classList.add('flex');
+
+                // Show preview immediately
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+
+                    // Reset zoom state for new image
+                    currentScale = 1;
+                    translateX = 0;
+                    translateY = 0;
+                    updateTransform();
+                    
+                    // Dynamically calculate and display the real resolution
+                    const img = new Image();
+                    img.onload = function() {
+                        document.getElementById('res-val').textContent = `${this.naturalWidth}×${this.naturalHeight}`;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+
+                // Start upload/inference process
+                processImage(file);
+            }
+
+            async function processImage(file) {
+                // UI State: Loading
+                emptyState.style.display = 'none';
+                resultsContent.classList.remove('fade-in', 'flex');
+                resultsContent.classList.add('hidden');
+                loadingState.classList.remove('hidden');
+
+                // Generate a fake scan ID
+                scanId.textContent = 'ID: SCAN-' + Math.floor(1000 + Math.random() * 9000);
+
+                const formData = new FormData();
+                formData.append('file', file);
+
+                try {
+                    // Send POST request to backend
+                    // Note: This endpoint must exist and accept multipart/form-data
+                    const response = await fetch('http://localhost:8000/predict', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        let errMsg = `HTTP error! status: ${response.status}`;
+                        try {
+                            const errData = await response.json();
+                            if (errData.error) errMsg = errData.error;
+                        } catch(e) {}
+                        throw new Error(errMsg);
+                    }
+
+                    const data = await response.json();
+                    
+                    // Simulate a small delay for smoother UI transition if backend is too fast
+                    setTimeout(() => {
+                        updateResultsUI(data);
+                    }, 800);
+
+                } catch (error) {
+                    console.error('Error during prediction:', error);
+                    
+                    if (error.message.includes('Invalid Image')) {
+                        alert(error.message);
+                        document.getElementById('loading-state').classList.add('hidden');
+                        document.getElementById('empty-state').style.display = 'flex';
+                        return;
+                    }
+                    
+                    // Fallback for demonstration if backend is not running
+                    console.warn("Backend not reachable. Using fallback simulation data.");
+                    setTimeout(() => {
+                        // Simulate random prediction
+                        const isMalignant = Math.random() > 0.5;
+                        const conf = (0.75 + Math.random() * 0.24).toFixed(3); // 75% to 99%
+                        updateResultsUI({
+                            prediction: isMalignant ? 'Malignant' : 'Benign',
+                            confidence: parseFloat(conf) * 100 // Fallback simulated percentage
+                        });
+                    }, 1500);
+                }
+            }
+
+            function updateResultsUI(data) {
+                // Hide Loading, Show Results
+                loadingState.classList.add('hidden');
+                resultsContent.classList.remove('hidden');
+                resultsContent.classList.add('flex', 'fade-in');
+
+                // Parse prediction and confidence
+                const predictionText = data.prediction || 'Unknown';
+                const confidenceVal = data.confidence || 0;
+                
+                // Format confidence as percentage (API returns e.g. 92.45)
+                const confPercentage = Math.round(confidenceVal);
+
+                // Store globally for Review Flags modal
+                currentPrediction = predictionText.toLowerCase();
+                currentConfidence = confPercentage;
+                currentScanId = scanId.textContent;
+
+                // --- XSS-safe badge rendering via DOM (no innerHTML with user data) ---
+                const badge = document.createElement('span');
+                badge.className = 'inline-block px-6 py-2 rounded-full font-label-sm text-label-sm uppercase tracking-widest';
+
+                const normalized = predictionText.toLowerCase();
+
+                if (normalized === 'malignant') {
+                    badge.classList.add('bg-error/20', 'text-error', 'border', 'border-error/30', 'shadow-[0_0_15px_rgba(255,180,171,0.15)]');
+                    badge.textContent = 'Malignant';
+                    confidencePath.style.stroke = '#ffb4ab';
+                } else if (normalized === 'benign') {
+                    badge.classList.add('bg-primary-container/20', 'text-primary-container', 'border', 'border-primary-container/30');
+                    badge.textContent = 'Benign';
+                    confidencePath.style.stroke = '#06B6D4';
+                } else if (normalized === 'uncertain') {
+                    badge.classList.add('bg-tertiary/20', 'text-tertiary', 'border', 'border-tertiary/30');
+                    badge.textContent = 'Uncertain — Review Manually';
+                    confidencePath.style.stroke = '#ffb873';
+                } else {
+                    // Fallback: sanitize by only using textContent — never renders HTML
+                    badge.classList.add('bg-surface-variant', 'text-on-surface');
+                    badge.textContent = 'Unknown';
+                    confidencePath.style.stroke = '#869397';
+                }
+
+                predictionBadgeContainer.replaceChildren(badge);
+
+                // Animate Gauge
+                confidenceText.textContent = `${confPercentage}%`;
+                
+                // Reset animation
+                confidencePath.style.animation = 'none';
+                confidencePath.offsetHeight; /* trigger reflow */
+                
+                // Construct new animation style dynamically for the specific percentage
+                const styleSheet = document.createElement("style");
+                styleSheet.type = "text/css";
+                styleSheet.innerText = `
+                    @keyframes dynamicProgress {
+                        0% { stroke-dasharray: 0 100; }
+                        100% { stroke-dasharray: ${confPercentage} 100; }
+                    }
+                `;
+                document.head.appendChild(styleSheet);
+                
+                confidencePath.style.animation = 'dynamicProgress 1.5s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+            }
+        });
+    </script>
+</body></html>

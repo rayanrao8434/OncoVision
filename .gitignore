@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.env
+.env.*
+
+# Model weights (large binary files — share separately)
+*.h5
+*.keras
+*.pb
+models/
+
+# Datasets
+breast-histopathology-images/
+
+# Kaggle credentials
+kaggle.json
+*.json
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
